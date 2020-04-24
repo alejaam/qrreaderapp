@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:qrreaderapp/src/pages/direcciones_page.dart';
 import 'package:qrreaderapp/src/pages/mapas_page.dart';
 
+import 'package:barcode_scan/barcode_scan.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -29,8 +31,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _scanQR() {
-    print('Scan QR...');
+  _scanQR() async {
+    // https://alejaam.github.io/portfolio/
+    // geo:19.443353845795873,-99.12144377669223
+    String futureString = '';
+    try {
+      futureString = await BarcodeScanner.scan();
+    } catch (e) {
+      futureString = e.toString();
+    }
+
+    print('FutureString: $futureString');
+
+    if (futureString != null) {
+      print('Tenemos información');
+    }
   }
 
   Widget _callPage(int paginaActual) {
