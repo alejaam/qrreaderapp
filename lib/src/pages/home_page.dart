@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:qrreaderapp/src/models/scan_model.dart';
+import 'package:qrreaderapp/src/bloc/scans_bloc.dart';
+
 import 'package:qrreaderapp/src/pages/direcciones_page.dart';
 import 'package:qrreaderapp/src/pages/mapas_page.dart';
-import 'package:qrreaderapp/src/providers/db_provider.dart';
-
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,6 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final scansBloc = new ScansBloc();
   int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,50 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('QR Scanner'),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.delete_forever), onPressed: null)
+          IconButton(
+              icon: Icon(Icons.delete_forever),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0)),
+                        title: Center(child: Text("¡Alerta!")),
+                        content: ListTile(
+                          title: Text(
+                              "¿Estás seguro que deseas eliminar todos los registros?"),
+                        ),
+                        actions: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              FlatButton(
+                                child: Text(
+                                  "Cancelar",
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              FlatButton(
+                                child: Text("Aceptar",
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor)),
+                                onPressed: () {
+                                  scansBloc.borrarScanTodos();
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
+                          )
+                        ],
+                      );
+                    });
+              })
         ],
       ),
       body: _callPage(currentIndex),
@@ -37,6 +81,7 @@ class _HomePageState extends State<HomePage> {
     // https://alejaam.github.io/portfolio/
     // geo:19.443353845795873,-99.12144377669223
     String futureString = 'https://alejaam.github.io/portfolio/';
+    String futureString2 = 'geo:19.443353845795873,-99.12144377669223';
     // try {
     //   futureString = await BarcodeScanner.scan();
     // } catch (e) {
@@ -47,7 +92,11 @@ class _HomePageState extends State<HomePage> {
 
     if (futureString != null) {
       final scan = ScanModel(valor: futureString);
-      DBProvider.db.nuevoScan(scan);
+      scansBloc.agregarScan(scan);
+      final scan2 = ScanModel(valor: futureString2);
+      scansBloc.agregarScan(scan2);
+      // DBProvider.db.nuevoScan(scan);
+
     }
   }
 
