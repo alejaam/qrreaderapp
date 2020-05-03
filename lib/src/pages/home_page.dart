@@ -6,6 +6,8 @@ import 'package:qrreaderapp/src/bloc/scans_bloc.dart';
 import 'package:qrreaderapp/src/pages/direcciones_page.dart';
 import 'package:qrreaderapp/src/pages/mapas_page.dart';
 
+import 'package:qrreaderapp/src/utils/utils.dart' as utils;
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -71,32 +73,27 @@ class _HomePageState extends State<HomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.filter_center_focus),
-        onPressed: _scanQR,
+        onPressed: () => _scanQR(context),
         backgroundColor: Theme.of(context).primaryColor,
       ),
     );
   }
 
-  _scanQR() async {
+  _scanQR(context) async {
     // https://alejaam.github.io/portfolio/
     // geo:19.443353845795873,-99.12144377669223
     String futureString = 'https://alejaam.github.io/portfolio/';
-    String futureString2 = 'geo:19.443353845795873,-99.12144377669223';
     // try {
     //   futureString = await BarcodeScanner.scan();
     // } catch (e) {
     //   futureString = e.toString();
     // }
 
-    // print('FutureString: $futureString');
-
     if (futureString != null) {
       final scan = ScanModel(valor: futureString);
       scansBloc.agregarScan(scan);
-      final scan2 = ScanModel(valor: futureString2);
-      scansBloc.agregarScan(scan2);
       // DBProvider.db.nuevoScan(scan);
-
+      utils.abrirScan(context, scan);
     }
   }
 
