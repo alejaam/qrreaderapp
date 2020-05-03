@@ -1,3 +1,4 @@
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 
 import 'package:qrreaderapp/src/models/scan_model.dart';
@@ -82,12 +83,12 @@ class _HomePageState extends State<HomePage> {
   _scanQR(context) async {
     // https://alejaam.github.io/portfolio/
     // geo:19.443353845795873,-99.12144377669223
-    String futureString = 'https://alejaam.github.io/portfolio/';
-    // try {
-    //   futureString = await BarcodeScanner.scan();
-    // } catch (e) {
-    //   futureString = e.toString();
-    // }
+    String futureString = '';
+    try {
+      futureString = await BarcodeScanner.scan();
+    } catch (e) {
+      futureString = e.toString();
+    }
 
     if (futureString != null) {
       final scan = ScanModel(valor: futureString);
@@ -121,7 +122,7 @@ class _HomePageState extends State<HomePage> {
       items: [
         BottomNavigationBarItem(icon: Icon(Icons.map), title: Text('Mapas')),
         BottomNavigationBarItem(
-            icon: Icon(Icons.location_on), title: Text('Direcciones')),
+            icon: Icon(Icons.location_on), title: Text('Páginas Web')),
       ],
     );
   }
